@@ -1,0 +1,5 @@
+nose
+sphinx
+-e git://github.com/adafruit/Adafruit_Python_DHT#egg=Adafruit_DHT
+paho-mqtt
+RPi.GPIO

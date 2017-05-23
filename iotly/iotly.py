@@ -7,6 +7,7 @@ import time
 import threading
 import sys
 import logging
+import traceback
 #from systemd import journal
 
 log = logging.getLogger('iotly')
@@ -81,9 +82,9 @@ def combGas(MQ5_PIN):
 
 SENSOR = Adafruit_DHT.AM2302
 DHT_PIN = 4
-humidity = "-"
-temperature = "-"
 def fetch_am2302():
+  humidity=None
+  temperature=None
 
   humidity, temperature = Adafruit_DHT.read_retry(SENSOR, DHT_PIN)
 
@@ -101,12 +102,18 @@ def fetch_am2302():
     client.publish("studio/sensors/temperature", temperature, 0, True)
 
 def sender():
+  log.info("Starting sender..")
   while 1:
-    fetch_am2302()
-    MOTION(PIR_PIN)
-    combGas(MQ5_PIN)
+    try:
+      fetch_am2302()
+      MOTION(PIR_PIN)
+      combGas(MQ5_PIN)
 
-    time.sleep(30)
+      time.sleep(30)
+
+      log.info("Fetching..")
+    except Exception as err:
+      log.exception(err)
 
 try:
   GPIO.add_event_detect(PIR_PIN, GPIO.BOTH, callback=MOTION)
@@ -125,6 +132,8 @@ try:
   log.info("Starting (CTRL+C to exit)")
   time.sleep(1)
   log.info("Ready")
+
+  #fetch_am2302()
 
   while 1:
     time.sleep(100)

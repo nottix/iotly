@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
-from . import iotly
+import sys
+from . import core
 
 def main(args=None):
     core.start_iotly()

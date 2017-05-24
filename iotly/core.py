@@ -1,12 +1,31 @@
 # -*- coding: utf-8 -*-
-from . import helpers
+from . import config
+from . import mqtt_handler as MqttHandler
+from . import sensors as Sensors
+#from . import iotly
+import logging
+import traceback
+import time
 
-def get_hmm():
-    """Get a thought."""
-    return 'hmmm...'
+log = logging.getLogger('core')
+log.addHandler(logging.StreamHandler())
+log.setLevel(logging.INFO)
 
+def start_iotly():
+    """Starting..."""
+    conf = config.load_config()
 
-def hmm():
-    """Contemplation..."""
-    if helpers.get_answer():
-        print(get_hmm())
+    mqttInstance = MqttHandler.MqttHandler(conf)
+    mqttInstance.start()
+
+    sensors = Sensors.Sensors(conf)
+    sensors.start()
+
+    try:
+        log.info("Ready.")
+        while 1:
+            time.sleep(100)
+    except KeyboardInterrupt:
+        mqttInstance.stop()
+        sensors.stop()
+        log.info("Quit")

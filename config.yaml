@@ -1,0 +1,23 @@
+# Configuation
+
+name: rasp1
+domain: hass
+period: 60
+
+mqtt:
+  address: 192.168.1.78
+  port: 1883
+
+sensors:
+  - type: am2302
+    name: temperature
+    pin: 4
+  - type: switch
+    name: switch
+    pin: 26
+  - type: din
+    name: motion
+    pin: 7
+  - type: din
+    name: combgas
+    pin: 17

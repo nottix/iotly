@@ -21,6 +21,8 @@ class MqttHandler (threading.Thread):
 
         self.config = config
         self.mqttBroker = config['mqtt']['address']
+        
+        self.connect()
 
     def connect(self):
         retry = True
@@ -57,7 +59,7 @@ class MqttHandler (threading.Thread):
     def run(self):
         log.info("Connecting to " + self.mqttBroker)
 
-        self.connect()
+#        self.connect()
         # Blocking call that processes network traffic, dispatches callbacks and
         # handles reconnecting.
         # Other loop*() functions are available that give a threaded interface and a

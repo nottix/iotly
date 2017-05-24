@@ -18,7 +18,7 @@ def start_iotly():
     mqttInstance = MqttHandler.MqttHandler(conf)
     mqttInstance.start()
 
-    sensors = Sensors.Sensors(conf)
+    sensors = Sensors.Sensors(conf, mqttInstance.client)
     sensors.start()
 
     try:

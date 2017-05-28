@@ -1,6 +1,6 @@
 # Configuation
 
-name: rasp1
+name: rasp2
 domain: hass
 period: 60
 
@@ -19,17 +19,13 @@ sensors:
     name: temperature
     pin: 4
   - type: switch
-    name: switch
+    name: switch1
     pin: 26
   - type: din
     name: motion
     pin: 7
-  - type: din
-    name: combgas
-    pin: 17
   - type: ain
-    name: flame
+    name: light
     ch: 0
-  - type: ain
-    name: cgas
-    ch: 7
+  - type: bmp085
+    name: barometer

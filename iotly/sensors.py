@@ -3,6 +3,7 @@
 import RPi.GPIO as GPIO
 import Adafruit_MCP3008
 import Adafruit_DHT
+import Adafruit_BMP.BMP085 as BMP085
 import time
 import threading
 import sys
@@ -61,6 +62,8 @@ class Sensors (threading.Thread):
                 self.pins[sensor['pin']] = sensor
             elif (sensor['type'] == 'ain'):
                 self.chs[sensor['ch']] = sensor
+            #elif (sensor['type'] == 'bmp085'):
+            
 
     def eventCallback(self, pin):
         sensor = self.pins[pin]
@@ -105,6 +108,35 @@ class Sensors (threading.Thread):
 
         self.client.publish(self.config['domain']+"/"+self.config['name']+"/sensors/"+name, json.dumps(data), 0, True)
 
+    def fetchBmp085(self, name):
+        # Default constructor will pick a default I2C bus.
+        #
+        # For the Raspberry Pi this means you should hook up to the only exposed I2C bus
+        # from the main GPIO header and the library will figure out the bus number based
+        # on the Pi's revision.
+        #
+        # For the Beaglebone Black the library will assume bus 1 by default, which is
+        # exposed with SCL = P9_19 and SDA = P9_20.
+        sensor = BMP085.BMP085()
+
+        temperature = '{0:0.2f}'.format(sensor.read_temperature())
+        pressure = '{0:0.2f}'.format(sensor.read_pressure())
+        altitude = '{0:0.2f}'.format(sensor.read_altitude())
+        sealevelPressure = '{0:0.2f}'.format(sensor.read_sealevel_pressure())
+
+        log.info('BMP: Temp = {0:0.2f} *C'.format(sensor.read_temperature()))
+        log.info('BMP: Pressure = {0:0.2f} Pa'.format(sensor.read_pressure()))
+        log.info('BMP: Altitude = {0:0.2f} m'.format(sensor.read_altitude()))
+        log.info('BMP: Sealevel Pressure = {0:0.2f} Pa'.format(sensor.read_sealevel_pressure()))
+
+        data = {}
+        data['temperature'] = temperature
+        data['pressure'] = pressure
+        data['altitude'] = altitude
+        data['sealevel_pressure'] = sealevelPressure
+
+        self.client.publish(self.config['domain']+"/"+self.config['name']+"/sensors/"+name, json.dumps(data), 0, True)
+
     def fetchAdcChannel(self, channel):
         sensor = self.chs[channel]
         value = self.adc.read_adc(int(channel))
@@ -144,6 +176,8 @@ class Sensors (threading.Thread):
                 for sensor in items:
                     if (sensor['type'] == 'am2302'):
                         self.fetch_am2302(sensor['name'], sensor['pin'])
+                    elif (sensor['type'] == 'bmp085'):
+                        self.fetchBmp085(sensor['name'])
                     elif (sensor['type'] == 'din'):
                         self.eventCallback(sensor['pin'])
                     #    GPIO.setup(sensor['pin'], GPIO.IN, pull_up_down=GPIO.PUD_DOWN)

@@ -3,9 +3,9 @@ Description=IOtly
 After=multi-user.target
 
 [Service]
-User=pi
+User=root
 Type=simple
-ExecStart=/usr/bin/python /home/pi/iotly/iotly/iotly.py
+ExecStart=/usr/bin/python -m iotly
 Restart=on-abort
 
 [Install]

@@ -3,4 +3,5 @@ sphinx
 paho-mqtt
 RPi.GPIO
 pyyaml
--e git://github.com/adafruit/Adafruit_Python_DHT#egg=Adafruit_DHT
+adafruit-dht
+adafruit-mcp3008

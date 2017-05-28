@@ -21,7 +21,7 @@ class MqttHandler (threading.Thread):
 
         self.config = config
         self.mqttBroker = config['mqtt']['address']
-        
+
         self.connect()
 
     def connect(self):
@@ -51,6 +51,8 @@ class MqttHandler (threading.Thread):
     # The callback for when a PUBLISH message is received from the server.
     def on_message(self, client, userdata, msg):
       log.info(msg.topic+" "+str(msg.payload))
+      if (self.commandsHandler):
+          self.commandsHandler.handleCommands(msg)
 
     def stop(self):
         self.isRunning = False

@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 import sys
-from . import core
+import core
 
 def main(args=None):
     core.start_iotly()

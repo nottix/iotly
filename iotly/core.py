@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
-from . import config
-from . import mqtt_handler as MqttHandler
-from . import sensors as Sensors
+import config
+import mqtt_handler as MqttHandler
+import sensors as Sensors
 #from . import iotly
 import logging
 import traceback
@@ -18,7 +18,7 @@ def start_iotly():
     mqttInstance = MqttHandler.MqttHandler(conf)
     mqttInstance.start()
 
-    sensors = Sensors.Sensors(conf, mqttInstance.client)
+    sensors = Sensors.Sensors(conf, mqttInstance)
     sensors.start()
 
     try:

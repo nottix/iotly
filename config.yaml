@@ -8,6 +8,12 @@ mqtt:
   address: 192.168.1.78
   port: 1883
 
+adc:
+  clk: 18
+  miso: 23
+  mosi: 24
+  cs: 25
+
 sensors:
   - type: am2302
     name: temperature
@@ -21,3 +27,9 @@ sensors:
   - type: din
     name: combgas
     pin: 17
+  - type: ain
+    name: flame
+    ch: 0
+  - type: ain
+    name: cgas
+    ch: 7

@@ -48,6 +48,7 @@ class MqttHandler (threading.Thread):
       # reconnect then subscriptions will be renewed.
 #      self.client.subscribe("$SYS/#")
       for ch in self.channels:
+         log.info("Subscribing to "+ch)
          self.client.subscribe(ch, qos=1)
 
       self.client.publish(self.config['domain']+"/"+self.config['name']+"/ready", "1", 0, True)

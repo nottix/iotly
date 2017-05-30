@@ -21,6 +21,7 @@ class MqttHandler (threading.Thread):
 
         self.config = config
         self.mqttBroker = config['mqtt']['address']
+        self.channels = []
 
         self.connect()
 
@@ -28,7 +29,7 @@ class MqttHandler (threading.Thread):
         retry = True
         while (retry == True):
           try:
-            self.client = mqtt.Client()
+            self.client = mqtt.Client(self.config['name'], clean_session=False)
             self.client.on_connect = self.on_connect
             self.client.on_message = self.on_message
             self.client.connect(self.mqttBroker, self.mqttPort, 60)
@@ -45,7 +46,10 @@ class MqttHandler (threading.Thread):
 
       # Subscribing in on_connect() means that if we lose the connection and
       # reconnect then subscriptions will be renewed.
-      #self.client.subscribe("$SYS/#")
+#      self.client.subscribe("$SYS/#")
+      for ch in self.channels:
+         self.client.subscribe(ch, qos=1)
+
       self.client.publish(self.config['domain']+"/"+self.config['name']+"/ready", "1", 0, True)
 
     # The callback for when a PUBLISH message is received from the server.

@@ -34,7 +34,8 @@ class Sensors (threading.Thread):
         self.isRunning = False
 
     def prepare(self):
-        self.client.subscribe(self.config['domain']+"/"+self.config['name']+"/admin")
+        self.client.subscribe(self.config['domain']+"/"+self.config['name']+"/admin", qos=1)
+        self.mqtt.channels.append(self.config['domain']+"/"+self.config['name']+"/admin")
 
         GPIO.setmode(GPIO.BCM)
         self.adc = Adafruit_MCP3008.MCP3008(clk=self.config['adc']['clk'], cs=self.config['adc']['cs'], miso=self.config['adc']['miso'], mosi=self.config['adc']['mosi'])
@@ -57,7 +58,8 @@ class Sensors (threading.Thread):
                 self.pins[sensor['pin']] = sensor
             elif (sensor['type'] == 'switch'):
                 GPIO.setup(sensor['pin'], GPIO.OUT)
-                self.client.subscribe(self.config['domain']+"/"+self.config['name']+"/commands/"+sensor['name'])
+                self.client.subscribe(self.config['domain']+"/"+self.config['name']+"/commands/"+sensor['name'], qos=1)
+                self.mqtt.channels.append(self.config['domain']+"/"+self.config['name']+"/commands/"+sensor['name']) 
                 self.topics.append(self.config['domain']+"/"+self.config['name']+"/commands/"+sensor['name'])
                 self.pins[sensor['pin']] = sensor
             elif (sensor['type'] == 'ain'):

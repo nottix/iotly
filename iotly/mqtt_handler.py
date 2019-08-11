@@ -32,6 +32,7 @@ class MqttHandler (threading.Thread):
             self.client = mqtt.Client(self.config['name'], clean_session=False)
             self.client.on_connect = self.on_connect
             self.client.on_message = self.on_message
+	    self.client.username_pw_set(self.config['mqtt']['username'], self.config['mqtt']['password'])
             self.client.connect(self.mqttBroker, self.mqttPort, 60)
 
             retry = False
